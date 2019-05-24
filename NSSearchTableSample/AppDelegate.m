@@ -10,7 +10,10 @@
 #import "Function.h"
 
 @interface AppDelegate ()
+@property NSArray *allPokemonNames; // ポケモンの名前データ
 @property NSArray *pokemonNames;    // テーブルビューに表示するポケモンのデータ
+@property (weak) IBOutlet NSSearchField *searchField;
+@property (weak) IBOutlet NSTableView *tableView;
 @property (weak) IBOutlet NSWindow *window;
 @end
 
@@ -18,9 +21,7 @@
 
 - (void)awakeFromNib {
     // 表示するデータを作成
-//    _pokemons = @[@"sample1", @"sample2", @"sample3"];
     [self loadPokemonNames];
-    NSLog(@"stop");
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -35,7 +36,38 @@
 - (void)loadPokemonNames {
     NSURL *pokemonList = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"PokemonList"];
     NSMutableArray *pokemonNames = [NSMutableArray arrayWithArray:[Function loadFile:pokemonList]];
-    _pokemonNames = [NSArray arrayWithArray:pokemonNames];
+    _allPokemonNames = [NSArray arrayWithArray:pokemonNames];
+    _pokemonNames = [NSArray arrayWithArray:[self createListWithSearchWord:@"" list:_allPokemonNames]];
+}
+
+#pragma mark - NSSearch Field Method
+// フリーワード検索窓に変更があった場合に呼ばれる
+- (IBAction)fontSearchFieldIsChanged:(id)sender {
+    _pokemonNames = [self createListWithSearchWord:_searchField.stringValue list:_allPokemonNames];
+    [_tableView reloadData];
+}
+
+/**
+ @brief フリーワードにより絞り込んだフォントリストを作成する（ひらがな・カタカナを区別しない）
+ @parama NSArray フォントリスト情報の配列
+ @return フォント検索窓の検索によって絞り込まれたフォントリスト
+ */
+- (NSArray *)createListWithSearchWord:(NSString *)word list:(NSArray *)oldList {
+    NSString *searchWord = [word stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO];  // ひらがな→カタカナ
+    searchWord = [searchWord uppercaseString];  // // 大文字へキャスト
+    if (searchWord.length == 0) {   // 検索窓が空だったらフィルタリングを行わない
+        return oldList;
+    }
+    NSMutableArray *newList = [NSMutableArray array];
+    [oldList enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *fixedElement = [element stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO]; // 日本語フォント名（ひらがなはカタカナに変換）
+        fixedElement = [fixedElement uppercaseString];  // 大文字へキャスト
+        NSRange searchResult = [fixedElement rangeOfString:searchWord];
+        if (searchResult.location != NSNotFound) {
+            [newList addObject:element];  // 検索に引っかかった場合
+        }
+    }];
+    return newList;
 }
 
 #pragma mark - NSTableView data source
