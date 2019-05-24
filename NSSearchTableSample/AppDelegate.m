@@ -10,18 +10,17 @@
 #import "Function.h"
 
 @interface AppDelegate ()
-@property NSArray *allPokemonNames; // ポケモンの名前データ
-@property NSArray *pokemonNames;    // テーブルビューに表示するポケモンのデータ
-@property (weak) IBOutlet NSSearchField *searchField;
-@property (weak) IBOutlet NSTableView *tableView;
-@property (weak) IBOutlet NSWindow *window;
+@property NSArray *allPokemonNames; // 全てのポケモン名
+@property NSArray *pokemonNames;    // テーブルビューに表示するポケモン名
+@property (weak) IBOutlet NSSearchField *searchField;   // 検索窓
+@property (weak) IBOutlet NSTableView   *tableView;
+@property (weak) IBOutlet NSWindow      *window;
 @end
 
 @implementation AppDelegate
 
 - (void)awakeFromNib {
-    // 表示するデータを作成
-    [self loadPokemonNames];
+    [self loadPokemonNames];    // テーブルビューに表示するデータを作成する
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -33,38 +32,42 @@
     // Insert code here to tear down your application
 }
 
+// テキストからポケモン名のデータを取得する
+// またテーブルビューに表示するデータを作成する
 - (void)loadPokemonNames {
     NSURL *pokemonList = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"PokemonList"];
     NSMutableArray *pokemonNames = [NSMutableArray arrayWithArray:[Function loadFile:pokemonList]];
     _allPokemonNames = [NSArray arrayWithArray:pokemonNames];
-    _pokemonNames = [NSArray arrayWithArray:[self createListWithSearchWord:@"" list:_allPokemonNames]];
+    [self fontSearchFieldIsChanged:nil];
 }
 
 #pragma mark - NSSearch Field Method
-// フリーワード検索窓に変更があった場合に呼ばれる
+// 検索窓のテキストに変更があった場合に呼ばれる
 - (IBAction)fontSearchFieldIsChanged:(id)sender {
     _pokemonNames = [self createListWithSearchWord:_searchField.stringValue list:_allPokemonNames];
     [_tableView reloadData];
 }
 
 /**
- @brief フリーワードにより絞り込んだフォントリストを作成する（ひらがな・カタカナを区別しない）
- @parama NSArray フォントリスト情報の配列
- @return フォント検索窓の検索によって絞り込まれたフォントリスト
+ @brief 対象文字列の含まれる要素の配列を作成する
+ @parama word 検索する文字列（※ひらがな・カタカナを区別しない）
+ @param oldList 検索対象の配列
+ @return 対象文字列が含まれる要素の配列
  */
-- (NSArray *)createListWithSearchWord:(NSString *)word list:(NSArray *)oldList {
-    NSString *searchWord = [word stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO];  // ひらがな→カタカナ
-    searchWord = [searchWord uppercaseString];  // // 大文字へキャスト
-    if (searchWord.length == 0) {   // 検索窓が空だったらフィルタリングを行わない
-        return oldList;
+- (NSArray *)createListWithSearchWord:(NSString *)word list:(NSArray<NSString *> *)oldList {
+    NSString *searchWord = [word stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO];  // ひらがなをカタカナに変換（検索時の統一のため）
+    searchWord = [searchWord uppercaseString];  // 大文字へキャスト
+    if (searchWord.length == 0) {
+        return oldList; // 検索文字列がない場合は、元の配列をそのまま返す
     }
     NSMutableArray *newList = [NSMutableArray array];
     [oldList enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *fixedElement = [element stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO]; // 日本語フォント名（ひらがなはカタカナに変換）
+        NSString *fixedElement = [element stringByApplyingTransform:NSStringTransformHiraganaToKatakana reverse:NO]; // 日本語フォント名（ひらがなをカタカナに変換）
         fixedElement = [fixedElement uppercaseString];  // 大文字へキャスト
+        
         NSRange searchResult = [fixedElement rangeOfString:searchWord];
         if (searchResult.location != NSNotFound) {
-            [newList addObject:element];  // 検索に引っかかった場合
+            [newList addObject:element];  // 対象文字列が含まれる場合
         }
     }];
     return newList;
@@ -83,6 +86,5 @@
     cellView.textField.stringValue = _pokemonNames[row];
     return cellView;
 }
-
 
 @end
