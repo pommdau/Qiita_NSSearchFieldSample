@@ -11,6 +11,8 @@
 		D0684B032297B9BD006B6289 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0684B022297B9BD006B6289 /* Assets.xcassets */; };
 		D0684B062297B9BD006B6289 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0684B042297B9BD006B6289 /* MainMenu.xib */; };
 		D0684B092297B9BD006B6289 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D0684B082297B9BD006B6289 /* main.m */; };
+		D0684B112297BB0A006B6289 /* PokemonList in Resources */ = {isa = PBXBuildFile; fileRef = D0684B102297BB0A006B6289 /* PokemonList */; };
+		D0684B142297BD70006B6289 /* Function.m in Sources */ = {isa = PBXBuildFile; fileRef = D0684B132297BD70006B6289 /* Function.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,9 @@
 		D0684B072297B9BD006B6289 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0684B082297B9BD006B6289 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D0684B0A2297B9BE006B6289 /* NSSearchTableSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NSSearchTableSample.entitlements; sourceTree = "<group>"; };
+		D0684B102297BB0A006B6289 /* PokemonList */ = {isa = PBXFileReference; lastKnownFileType = text; path = PokemonList; sourceTree = "<group>"; };
+		D0684B122297BD70006B6289 /* Function.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Function.h; sourceTree = "<group>"; };
+		D0684B132297BD70006B6289 /* Function.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Function.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +61,9 @@
 			children = (
 				D0684AFF2297B9BC006B6289 /* AppDelegate.h */,
 				D0684B002297B9BC006B6289 /* AppDelegate.m */,
+				D0684B122297BD70006B6289 /* Function.h */,
+				D0684B132297BD70006B6289 /* Function.m */,
+				D0684B102297BB0A006B6289 /* PokemonList */,
 				D0684B022297B9BD006B6289 /* Assets.xcassets */,
 				D0684B042297B9BD006B6289 /* MainMenu.xib */,
 				D0684B072297B9BD006B6289 /* Info.plist */,
@@ -123,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0684B032297B9BD006B6289 /* Assets.xcassets in Resources */,
+				D0684B112297BB0A006B6289 /* PokemonList in Resources */,
 				D0684B062297B9BD006B6289 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0684B142297BD70006B6289 /* Function.m in Sources */,
 				D0684B092297B9BD006B6289 /* main.m in Sources */,
 				D0684B012297B9BC006B6289 /* AppDelegate.m in Sources */,
 			);
